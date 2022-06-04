@@ -1,0 +1,59 @@
+% !TeX root = paper-autotools-python.tex
+% !TeX TXS-program:compile = txs:///pdflatex/[--shell-escape]
+% https://orcid.org/0000-0003-4586-8500
+
+\include{preamble}
+
+\begin{document}
+
+\include{frontmatter/title}
+
+\section{\label{sec:Start}Using GNU Autotools with Python Projects}
+\vspace{2mm}
+\justifying
+
+
+\begin{figure}[ht]
+    \includegraphics[width=12cm]{images/diagram.png}
+    \caption{A basic overview of how the main autotools components fit together.}
+    \label{diagram}
+\end{figure}
+
+Source: \href{https://devmanual.gentoo.org/general-concepts/autotools/index.html}{Gentoo Linux DevManual: The Basics of Autotools}
+
+\section{\label{sec:bootstrap}The bootstrap.sh script}
+
+The purpose of the ``bootstrap.sh'' script is to allow project maintainers to prepare the local environment for use of autotools.
+The boostrap script will attempt to guess if the local host is running a certain Linux distribution, or MacOS. There are execution
+paths for each of these respective scenarios.
+
+At first execution, autotools will run libtool, automake, and configure. Autotools creates a file named ``config.log''. If the config.log
+file is found on subsequent runs of the script, fewer configuration steps will be performed since a certain system state is assumed. To
+get a ``clean start'' the maintainer can simply delete the config.log file and rerun the bootstrap.sh script.
+
+\justifying
+A full working example of the bootstrap.sh script can be found in the source repository for this paper.
+
+\section{\label{sec:config}The configure.ac file}
+\vspace{2mm}
+\justifying
+A ``./configure'' script can be generated from a template named ``configure.ac''. This template is comprised of macros that are used to identify local system
+software and program locations. In our case, we are interested in identifying the location of the Python 3.x installation on the local system.
+
+\justifying
+\href{https://www.gnu.org/software/automake/manual/html\_node/Python.html}{Per the automake documentation} we can define the minimum acceptable version of Python
+and a variable that automake can use to refer to the version of Python discovered on the system. These declarative statements and the resultant values can then be
+referenced by automake and added explicitly to the ``Makefile.am'' template.
+
+\begin{mybox}{\thetcbcounter: Declaring Python Autoconf macros in configure.ac}
+    \lstinputlisting{code/configure.ac.1}
+\end{mybox}
+\vspace{2mm}
+
+\justifying
+A full working example of the configure.ac file can be found in the source repository for this paper.
+
+\section{\label{sec:make}The Makefile.am file}
+
+
+\end{document}
