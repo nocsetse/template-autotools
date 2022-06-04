@@ -9,4 +9,4 @@ clean:
 	done
 
 paper: 
-	latexmk -pdf -file-line-error -interaction=nonstopmode -synctex=1 -shell-escape paper
+	latexmk -pdf -file-line-error -interaction=nonstopmode -synctex=1 -shell-escape paper-autotools-python

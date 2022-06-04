@@ -1,0 +1,16 @@
+% !TeX root = paper.tex
+% !TeX TXS-program:compile = txs:///pdflatex/[--shell-escape]
+% https://orcid.org/0000-0003-4586-8500
+
+\include{preamble}
+\begin{document}
+\include{frontmatter/title}
+
+\section{\label{sec:bootstrap}The bootstrap.sh script}
+
+\section{\label{sec:config}The configure.ac file}
+
+\section{\label{sec:make}The Makefile.am file}
+
+
+\end{document}
