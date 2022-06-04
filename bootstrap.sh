@@ -52,10 +52,10 @@ function macos() {
   brew cleanup
   brew upgrade
   echo -e "${CYAN}Setting up autools for MacOS (this may take a while...)${NC}"
-  brew install libtool
+  #brew install libtool
   brew install gawk
   if [ ! -f "./config.status" ]; then
-    echo -e "${CYAN}Running libtool/autoconf/automake...${NC}"
+    echo -e "${CYAN}Running autoconf/automake...${NC}"
     glibtoolize
     aclocal -I config
     if [ -d "aclocal" ]; then
@@ -64,7 +64,6 @@ function macos() {
       autoreconf -i
     fi
     automake -a -c --add-missing
-    brew install az
   else
     echo -e "${CYAN}Your system is already configured. (Delete config.status to reconfigure)${NC}"
     ./config.status
@@ -76,7 +75,7 @@ function debian {
   # sudo apt install gnuplot gawk libtool psutils make
 
   if [ ! -f "./config.status" ]; then
-    libtoolize
+    # libtoolize
     if [ -d "aclocal" ]; then
       autoreconf
     else
@@ -93,7 +92,7 @@ function debian {
 
 function redhat() {
   if [ ! -f "./config.status" ]; then
-    libtoolize
+    # libtoolize
     if [ -d "aclocal" ]; then
       autoreconf
     else

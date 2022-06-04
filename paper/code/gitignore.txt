@@ -1,0 +1,16 @@
+Makefile
+Makefile.in
+configure
+configure~
+config/
+config/install-sh
+config/missing
+#aclocal
+aclocal.m4
+autom4te.cache/
+config.status
+config.log
+COPYING
+INSTALL
+libtool
+

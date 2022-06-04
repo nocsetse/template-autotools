@@ -1,0 +1,4 @@
+./bootstrap.sh
+./configure
+make python
+. _build/bin/activate

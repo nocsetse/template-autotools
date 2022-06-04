@@ -8,18 +8,54 @@
 
 \include{frontmatter/title}
 
-\section{\label{sec:Start}Using GNU Autotools with Python Projects}
+\section{\label{sec:Start}Integration of GNU Autotools with Python Development Environments}
 \vspace{2mm}
 \justifying
+My effort to reduce the complexity and ease configuration issues when delivering Python heavy projects to customers and end users has led
+to useful ways of working that I share in this paper. Autotools are a well-maintained set of Open Source tools with a gentle learning curve
+and are included in the distribution of many Open Source packages that we all rely on daily, at least indirectly. Here I have assembled certain battle-tested methods that I encourage others to understand and adopt.
 
+\justifying
+The full set of steps for using this Autotools configuration is as follows:
+\vspace{2mm}
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{|l|l|}\hline
+        Tool & Description \\\hline
+        autoconf & Generates a configure script from configure.ac   \\\hline
+        automake & Generates a system-specific Makefile based on Makefile.am template    \\\hline
+        make  &   X    \\\hline
+    \end{tabular}
+    \caption{Tools used in this project}
+    \label{Autotools}
+\end{table}
+\vspace{2mm}
+
+
+\justifying
+In an effort to maintain a tidy development environment, the ``.gitignore'' file is appended with the following entries. These
+entries will prevent intermediate build files from being checked in to revision control unnecessarily. Note that in the case
+of ``aclocal'' it has been intentionally omitted since there is a sub-folder containing many m4 macros specific to Latex
+document configuration and build.
+
+\begin{mybox}[ht]{\thetcbcounter: Files to be excluded from revision control systems}
+    \lstinputlisting{code/gitignore.txt}
+\end{mybox}
+\vspace{2mm}
+
+
+
+\justifying
+The image shown in Figure \ref{diagram} is from \href{https://devmanual.gentoo.org/general-concepts/autotools/index.html}{Gentoo Linux DevManual: The Basics of Autotools}.
+The image illustrates the relationship between the components mentioned in Table \ref{Autotools}.
+\vspace{2mm}
 
 \begin{figure}[ht]
     \includegraphics[width=12cm]{images/diagram.png}
     \caption{A basic overview of how the main autotools components fit together.}
     \label{diagram}
 \end{figure}
-
-Source: \href{https://devmanual.gentoo.org/general-concepts/autotools/index.html}{Gentoo Linux DevManual: The Basics of Autotools}
+\vspace{2mm}
 
 \section{\label{sec:bootstrap}The bootstrap.sh script}
 
@@ -33,6 +69,11 @@ get a ``clean start'' the maintainer can simply delete the config.log file and r
 
 \justifying
 A full working example of the bootstrap.sh script can be found in the source repository for this paper.
+
+\begin{mybox}{\thetcbcounter: Steps to use Autotools}
+    \lstinputlisting{code/steps.txt}
+\end{mybox}
+\vspace{2mm}
 
 \section{\label{sec:config}The configure.ac file}
 \vspace{2mm}
@@ -55,5 +96,44 @@ A full working example of the configure.ac file can be found in the source repos
 
 \section{\label{sec:make}The Makefile.am file}
 
+\justifying
+The ``Makefile.am'' file is a template that Automake uses to generate the full Makefile. Note that this project includes
+``Makefile.am'' at the top level for setting up the Python virtual environment, and a second named ``paper/Makefile.am''
+that contains directives on generating the PDF document you are reading now.
+
+\begin{mybox}{\thetcbcounter: The Makefile.am for generating the top-level Makefile}
+    \lstinputlisting{../Makefile.am}
+\end{mybox}
+\vspace{2mm}
+
+\begin{mybox}{\thetcbcounter: The Makefile.am for generating the paper Makefile}
+    \lstinputlisting{Makefile.am}
+\end{mybox}
+\vspace{2mm}
+
+\section{\label{sec:make}Python requirements.txt files}
+
+\justifying
+My projects typically include three main requirements files, separated by functionality and named to foster a self-documenting paradigm.
+
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{|l|l|}\hline
+        Filename & Description \\\hline
+        src/requirements.txt & Common Python modules required by the main application.    \\\hline
+        tests/requirements-test.txt & test, linting, syntax checking, formatting, etc.    \\\hline
+        tests/requirements-security.txt  &  scan and secure the main app   \\\hline
+    \end{tabular}
+    \caption{Python requirements files}
+    \label{Requirements}
+\end{table}
+
+\clearpage
+\begin{versionhistory}
+    \vhEntry{v0.1}{June 03, 2022}{Franklin Diaz}{Initial Draft}
+\end{versionhistory}
+\nocite{*}
+\bibliographystyle{plain}
+\bibliography{mybib.bib}
 
 \end{document}
