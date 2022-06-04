@@ -11,6 +11,6 @@ jobs:
       - name: Compile Kerberos LaTeX document
         uses: xu-cheng/latex-action@v2
         with:
-          root_file: paper.tex
+          root_file: paper-autotools-python.tex
           args: '-pdf -file-line-error -interaction=nonstopmode -shell-escape'
           working_directory: paper

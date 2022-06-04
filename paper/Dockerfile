@@ -6,7 +6,7 @@ ARG BUILD_DATE
 ARG USER="franklin"
 
 LABEL maintainer="Franklin <2730246+devsecfranklin@users.noreply.github.com>" \
-      org.opencontainers.image.source="https://github.com/devsecfranklin/paper-template" \
+      org.opencontainers.image.source="https://github.com/devsecfranklin/paper-autotools-python" \
       org.label-schema.build-date=$BUILD_DATE
 
 WORKDIR /workspace
