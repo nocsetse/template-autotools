@@ -13,12 +13,11 @@
 \justifying
 My effort to reduce the complexity and ease configuration issues when delivering Python heavy projects to customers and end users has led
 to useful ways of working that I share in this paper. Autotools are a well-maintained set of Open Source tools with a gentle learning curve
-and are included in the distribution of many Open Source packages that we all rely on daily. Here I have assembled and battled-tested certain
-methods that I would like to encourage others to understand and adopt.
+and are included in the distribution of many Open Source packages that we all rely on daily, at least indirectly. Here I have assembled certain battle-tested methods that I encourage others to understand and adopt.
 
 \justifying
-The full set of steps for using this autotools configuration is as follows:
-
+The full set of steps for using this Autotools configuration is as follows:
+\vspace{2mm}
 \begin{table}[ht]
     \centering
     \begin{tabular}{|l|l|}\hline
@@ -26,11 +25,25 @@ The full set of steps for using this autotools configuration is as follows:
         autoconf & Generates a configure script from configure.ac   \\\hline
         automake & Generates a system-specific Makefile based on Makefile.am template    \\\hline
         make  &   X    \\\hline
-        libtool  &   X    \\\hline
     \end{tabular}
     \caption{Tools used in this project}
     \label{Autotools}
 \end{table}
+\vspace{2mm}
+
+
+\justifying
+In an effort to maintain a tidy development environment, the ``.gitignore'' file is appended with the following entries. These
+entries will prevent intermediate build files from being checked in to revision control unnecessarily. Note that in the case
+of ``aclocal'' it has been intentionally omitted since there is a sub-folder containing many m4 macros specific to Latex
+document configuration and build.
+
+\begin{mybox}[ht]{\thetcbcounter: Files to be excluded from revision control systems}
+    \lstinputlisting{code/gitignore.txt}
+\end{mybox}
+\vspace{2mm}
+
+
 
 \justifying
 The image shown in Figure \ref{diagram} is from \href{https://devmanual.gentoo.org/general-concepts/autotools/index.html}{Gentoo Linux DevManual: The Basics of Autotools}.
@@ -42,6 +55,7 @@ The image illustrates the relationship between the components mentioned in Table
     \caption{A basic overview of how the main autotools components fit together.}
     \label{diagram}
 \end{figure}
+\vspace{2mm}
 
 \section{\label{sec:bootstrap}The bootstrap.sh script}
 
@@ -83,7 +97,19 @@ A full working example of the configure.ac file can be found in the source repos
 \section{\label{sec:make}The Makefile.am file}
 
 \justifying
-The ``Makefile.am'' file is a template that autotools uses to generate the full Makefile.
+The ``Makefile.am'' file is a template that Automake uses to generate the full Makefile. Note that this project includes
+``Makefile.am'' at the top level for setting up the Python virtual environment, and a second named ``paper/Makefile.am''
+that contains directives on generating the PDF document you are reading now.
+
+\begin{mybox}{\thetcbcounter: The Makefile.am for generating the top-level Makefile}
+    \lstinputlisting{../Makefile.am}
+\end{mybox}
+\vspace{2mm}
+
+\begin{mybox}{\thetcbcounter: The Makefile.am for generating the paper Makefile}
+    \lstinputlisting{Makefile.am}
+\end{mybox}
+\vspace{2mm}
 
 \section{\label{sec:make}Python requirements.txt files}
 
