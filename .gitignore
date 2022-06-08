@@ -1,4 +1,5 @@
 _build/
+*.tar.xz
 
 # Core latex/pdflatex auxiliary files:
 *.aux
