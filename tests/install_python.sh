@@ -24,8 +24,8 @@ function install_python() {
     cd Python-${PYTHON_VERSION}
     echo "Configure the Python ${PYTHON_VERSION} source"
     ./configure --enable-optimizations
-    echo "Doing make altinstall"
-    sudo make altinstall
+    echo "Doing make install"
+    sudo make install
 }
 
 function main() {
