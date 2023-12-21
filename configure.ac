@@ -1,6 +1,6 @@
 dnl Process this file with autoconf
 AC_PREREQ([2.69])
-AC_INIT(paper-autotools-python, 0.1, frank378@gmail.com, https://github.com/devsecfranklin/paper-autotools-python)
+AC_INIT(autotools-bootstrap, 0.2, franklin@dead10c5.org, https://github.com/devsecfranklin/autotools-bootstrap)
 AC_CONFIG_MACRO_DIR(config/m4)
 AC_CONFIG_AUX_DIR(config)
 AM_INIT_AUTOMAKE(foreign)
