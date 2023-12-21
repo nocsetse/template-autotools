@@ -13,8 +13,6 @@
 # v0.5 11/15/2022 Handle Docker container builds
 # v0.6 07/13/2023 Add required_files and OpenBSD support
 
-# Author:  2730246+devsecfranklin@users.noreply.github.com
-
 set -eu
 
 #Black        0;30     Dark Gray     1;30
