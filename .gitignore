@@ -283,6 +283,7 @@ Makefile
 Makefile.in
 configure
 configure~
+config.h
 config/
 config/install-sh
 config/missing
@@ -294,4 +295,4 @@ config.log
 COPYING
 INSTALL
 libtool
-
+stamp-h1

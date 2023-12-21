@@ -1,7 +1,7 @@
 CLOCAL_AMFLAGS = -I config/m4 -I aclocal
 ACLOCAL_AMFLAGS = -I config/m4 -I aclocal
 
-.PHONY: src tests
+.PHONY: include lib src tests
 
 clean: ## Clean up your mess
 	rm -rf _build *.egg-info

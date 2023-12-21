@@ -1,0 +1,22 @@
+name: CI build
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: bootstrap
+      run: |
+        sudo apt-get install -y gnuplot texlive-latex-extra fig2dev psutils
+        ./bootstrap.sh
+        ./configure
+
+
