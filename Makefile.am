@@ -7,6 +7,14 @@ clean: ## Clean up your mess
 	rm -rf _build *.egg-info
 	@find . -name '*.pyc' | xargs rm -rf
 	@find . -name '__pycache__' | xargs rm -rf
+	@find . -name 'Makefile' | xargs rm -rf
+	@find . -name 'Makefile.in' | xargs rm -rf
+	@for trash in _build aclocal.m4 autom4te.cache config config.log config.status configure configure~ libtool; do\
+		if [ -f $$trash ] || [ -d $$trash ]; then \
+				echo "Removing $$trash" ;\
+				rm -rf $$trash ;\
+		fi ; \
+	done
 
 python:
 	@$(PY39) -m venv _build
