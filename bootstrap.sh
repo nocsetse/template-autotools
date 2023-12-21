@@ -75,7 +75,7 @@ function macos() {
 }
 
 function debian {
-  # sudo apt install gnuplot gawk libtool psutils make
+  # sudo apt install gnuplot gawk libtool psutils make autoconf automake texlive-latex-extra fig2dev
 
   if [ ! -f "./config.status" ]; then
     # libtoolize

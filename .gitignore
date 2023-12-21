@@ -42,6 +42,7 @@ _build/
 *.synctex.gz
 *.synctex.gz(busy)
 *.pdfsync
+.tox/
 
 ## Build tool directories for auxiliary files
 # latexrun
