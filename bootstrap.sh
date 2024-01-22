@@ -10,7 +10,7 @@
 # v0.2 09/24/2022 Update this script
 # v0.3 10/19/2022 Add tool functions
 # v0.4 11/10/2022 Add automake check
-# v0.5 11/15/2022 Handle Docker container builds
+# v0.5 11.16.5/2022 Handle Docker container builds
 # v0.6 07/13/2023 Add required_files and OpenBSD support
 
 set -eu
@@ -40,10 +40,50 @@ DOCUMENTATION=false
 # Check if we are inside a docker container
 function check_docker() {
   if [ -f /.dockerenv ]; then
-    echo -e "${YELLOW}Containerized build environment...${NC}"
+    echo -e "${CYAN}Containerized build environment...${NC}"
     CONTAINER=true
   else
-    echo -e "${YELLOW}NOT a containerized build environment...${NC}"
+    echo -e "${CYAN}NOT a containerized build environment...${NC}"
+  fi
+}
+
+function detect_os() {
+  # check for the /etc/os-release file
+  OS_RELEASE=`cat /etc/os-release | grep "^ID=" | cut -d"=" -f2`
+  if [ -n "${OS_RELEASE}" ]; then
+    echo -e "${CYAN}Found /etc/os-release file: ${OS_RELEASE}${NC}"
+  fi
+
+  # Check uname (Linux, OpenBSD, Darwin)
+  MY_UNAME=`uname`
+  if [ -n "${OS_RELEASE}" ]; then
+    echo -e "${CYAN}Found uname: ${MY_UNAME}${NC}"
+  fi
+
+
+  if [ "$(uname)" == "OpenBSD" ]
+  then
+    echo -e "${CYAN}Detected OpenBSD${NC}"
+    MY_OS="openbsd"
+  elif [ "$(uname)" == "Darwin" ]
+  then
+    echo -e "${CYAN}Detected MacOS${NC}"
+    MY_OS="mac"
+  elif [ -f "/etc/redhat-release" ]
+  then
+    echo -e "${CYAN}Detected Red Hat/CentoOS/RHEL${NC}"
+    MY_OS="rh"
+  elif [ "$(grep -Ei 'debian|buntu|mint' /etc/*release)" ]
+  then
+    echo -e "${CYAN}Detected Debian/Ubuntu/Mint${NC}"
+    MY_OS="deb"
+  elif grep -q Microsoft /proc/version
+  then
+    echo -e "${CYAN}Detected Windows pretending to be Linux${NC}"
+    MY_OS="win"
+  else
+    echo -e "${YELLOW}Unrecongnized architecture.${NC}"
+    exit 1
   fi
 }
 
@@ -118,7 +158,7 @@ function run_aclocal() {
     #aclocal -I m4 $ACLOCAL_FLAGS || exit 1
     aclocal -I config || exit 1
   else
-    AUTOCONF_VERSION=2.69 AUTOMAKE_VERSION=1.15 aclocal -I config || exit 1
+    AUTOCONF_VERSION=2.71 AUTOMAKE_VERSION=1.16 aclocal -I config || exit 1
   fi
   echo -e "${CYAN}.. done with aclocal.${NC}"
 }
@@ -143,7 +183,7 @@ function run_automake() {
     automake -a -c --add-missing || exit 1
     #automake --force --copy --add-missing || exit 1
   else
-    AUTOCONF_VERSION=2.69 AUTOMAKE_VERSION=1.15 automake -a -c --add-missing || exit 1
+    AUTOCONF_VERSION=2.71 AUTOMAKE_VERSION=1.16 automake -a -c --add-missing || exit 1
   fi
   echo "... done with automake."
 }
@@ -157,9 +197,9 @@ function run_autoconf() {
     autoreconf -i || exit 1
   else
     # this is for OpenBSD systems
-    ac_ver="2.69"
+    ac_ver="2.71"
     echo "Running autoconf..."
-    AUTOCONF_VERSION=2.69 AUTOMAKE_VERSION=1.15 autoreconf -i || exit 1
+    AUTOCONF_VERSION=2.71 AUTOMAKE_VERSION=1.16 autoreconf -i || exit 1
   fi
   echo "... done with autoconf."
 }
@@ -169,33 +209,6 @@ function check_installed() {
   then
     echo "${1} could not be found"
     exit
-  fi
-}
-
-function detect_os() {
-  if [ "$(uname)" == "OpenBSD" ]
-  then
-    echo -e "${CYAN}Detected OpenBSD${NC}"
-    MY_OS="openbsd"
-  elif [ "$(uname)" == "Darwin" ]
-  then
-    echo -e "${CYAN}Detected MacOS${NC}"
-    MY_OS="mac"
-  elif [ -f "/etc/redhat-release" ]
-  then
-    echo -e "${CYAN}Detected Red Hat/CentoOS/RHEL${NC}"
-    MY_OS="rh"
-  elif [ "$(grep -Ei 'debian|buntu|mint' /etc/*release)" ]
-  then
-    echo -e "${CYAN}Detected Debian/Ubuntu/Mint${NC}"
-    MY_OS="deb"
-  elif grep -q Microsoft /proc/version
-  then
-    echo -e "${CYAN}Detected Windows pretending to be Linux${NC}"
-    MY_OS="win"
-  else
-    echo -e "${YELLOW}Unrecongnized architecture.${NC}"
-    exit 1
   fi
 }
 
@@ -293,5 +306,5 @@ function main() {
   #./config.status
 }
 
-main
+main "$@"
 

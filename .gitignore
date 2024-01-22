@@ -1,4 +1,5 @@
 _build/
+_test/
 *.tar.xz
 
 # Core latex/pdflatex auxiliary files:
@@ -279,11 +280,11 @@ TSWLatexianTemp*
 # Makeindex log files
 *.lpz
 
-Makefile
-Makefile.in
+confdefs.h
 configure
 configure~
 config.h
+config.h.in
 config/
 config/install-sh
 config/missing
@@ -294,5 +295,8 @@ config.status
 config.log
 COPYING
 INSTALL
+install-sh
 libtool
+Makefile
+Makefile.in
 stamp-h1
