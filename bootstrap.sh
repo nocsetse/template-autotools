@@ -13,7 +13,11 @@
 # v0.5 11.16.5/2022 Handle Docker container builds
 # v0.6 07/13/2023 Add required_files and OpenBSD support
 
-set -eu
+set -euo pipefail
+
+# The special shell variable IFS determines how Bash
+# recognizes word boundaries while splitting a sequence of character strings.
+#IFS=$'\n\t'
 
 #Black        0;30     Dark Gray     1;30
 #Red          0;31     Light Red     1;31
@@ -61,11 +65,11 @@ function detect_os() {
   fi
 
 
-  if [ "$(uname)" == "OpenBSD" ]
+  if [ "${MY_UNAME}" == "OpenBSD" ]
   then
     echo -e "${CYAN}Detected OpenBSD${NC}"
     MY_OS="openbsd"
-  elif [ "$(uname)" == "Darwin" ]
+  elif [ "${MY_UNAME}" == "Darwin" ]
   then
     echo -e "${CYAN}Detected MacOS${NC}"
     MY_OS="mac"
@@ -221,6 +225,7 @@ function install_macos() {
   # brew install libtool
   brew install automake
   brew install gawk
+  brew install direnv
 }
 
 function install_debian() {
