@@ -49,6 +49,7 @@ AC_CANONICAL_HOST
 build_linux=no
 build_windows=no
 build_mac=no
+build_openbsd=no
 
 # Detect the target system
 case "${host_os}" in
@@ -60,6 +61,9 @@ case "${host_os}" in
         ;;
     darwin*)
         build_mac=yes
+        ;;
+    openbsd*)
+        build_openbsd=yes
         ;;
     *)
         AC_MSG_ERROR(["OS $host_os is not supported"])

@@ -10,8 +10,9 @@
 # v0.2 09/24/2022 Update this script
 # v0.3 10/19/2022 Add tool functions
 # v0.4 11/10/2022 Add automake check
-# v0.5 11.16.5/2022 Handle Docker container builds
+# v0.5 11/16/2022 Handle Docker container builds
 # v0.6 07/13/2023 Add required_files and OpenBSD support
+# v0.7 04/22/2024 More OpenBSD support
 
 set -euo pipefail
 
@@ -38,6 +39,7 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 MY_OS="unknown"
+OS_RELEASE=""
 CONTAINER=false
 DOCUMENTATION=false
 
@@ -53,7 +55,10 @@ function check_docker() {
 
 function detect_os() {
   # check for the /etc/os-release file
-  OS_RELEASE=`cat /etc/os-release | grep "^ID=" | cut -d"=" -f2`
+  if [ -f "/etc/os-release" ]; then
+    OS_RELEASE=`cat /etc/os-release | grep "^ID=" | cut -d"=" -f2`
+  fi
+
   if [ -n "${OS_RELEASE}" ]; then
     echo -e "${CYAN}Found /etc/os-release file: ${OS_RELEASE}${NC}"
   fi
