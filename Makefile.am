@@ -19,7 +19,7 @@ clean: ## Clean up your mess
 python:
 	@$(PY39) -m venv _build
 	( \
-		source _build/bin/activate; \
+		. _build/bin/activate; \
 		_build/bin/python -m pip install --upgrade pip; \
 		_build/bin/python -m pip install -r src/requirements.txt; \
 	)
@@ -27,7 +27,7 @@ python:
 test: 
 	@$(PY39) -m venv _test
 	( \
-		source _build/bin/activate; \
+		. _build/bin/activate; \
 		_test/bin/python -m pip install --upgrade pip; \
 		_test/bin/python -m pip install tox; \
 		_test/bin/python -m pip install -r tests/requirements-test.txt; \
