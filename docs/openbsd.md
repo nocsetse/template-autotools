@@ -1,6 +1,6 @@
 # OpenBSD
 
 ```sh
-doas pkg_add transfig
+doas pkg_add transfig gnuplot
 ```
 
