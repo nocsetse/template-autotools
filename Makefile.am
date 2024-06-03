@@ -3,7 +3,7 @@ ACLOCAL_AMFLAGS = -I config/m4 -I aclocal
 
 .PHONY: include lib src tests
 
-clean: ## Clean up your mess
+clean:
 	rm -rf _build *.egg-info
 	@find . -name '*.pyc' | xargs rm -rf
 	@find . -name '__pycache__' | xargs rm -rf

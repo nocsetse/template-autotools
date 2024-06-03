@@ -1,0 +1,72 @@
+<header class="entry-header">
+		<h1 class="entry-title">Install and configure Automake on OpenBSD</h1>	</header><!-- .entry-header -->
+
+	<div class="entry-content">
+		<div>
+<p>Today, when I tried to compile a project, &#8220;<code>make</code>&#8221; complained following errors:</p>
+<pre><code># make
+CDPATH="${ZSH_VERSION+.}:" &amp;&amp; cd . &amp;&amp; /bin/sh /root/project/missing aclocal-1.15
+/root/project/missing[81]: aclocal-1.15: not found
+WARNING: 'aclocal-1.15' is missing on your system.
+         You should only need it if you modified 'acinclude.m4' or
+         'configure.ac' or m4 files included by 'configure.ac'.
+         The 'aclocal' program is part of the GNU Automake package:
+         &lt;http://www.gnu.org/software/automake&gt;
+         It also requires GNU Autoconf, GNU m4 and Perl in order to run:
+         &lt;http://www.gnu.org/software/autoconf&gt;
+         &lt;http://www.gnu.org/software/m4/&gt;
+         &lt;http://www.perl.org/&gt;
+*** Error 127 in /root/project(Makefile:330 './aclocal.m4')
+</code></pre>
+<p>To fix it, first install <code>Automake</code>:</p>
+<pre><code># pkg_add automake
+quirks-2.414 signed on 2018-03-28T14:24:37Z
+Ambiguous: choose package for automake
+a       0: &lt;None&gt;
+        1: automake-1.10.3p8
+        2: automake-1.11.6p2
+        3: automake-1.12.6p1
+        4: automake-1.13.4p1
+        5: automake-1.14.1p0
+        6: automake-1.15.1
+        7: automake-1.4.6p5
+        8: automake-1.8.5p9
+        9: automake-1.9.6p12
+Your choice: 6
+automake-1.15.1:autoconf-2.69p2: ok
+automake-1.15.1: ok
+</code></pre>
+<p>Then &#8220;<code>make</code>&#8221; prompted it needs &#8220;<code>AUTOCONF_VERSION</code>&#8220;:</p>
+<pre><code># make
+CDPATH="${ZSH_VERSION+.}:" &amp;&amp; cd . &amp;&amp; /bin/sh /root/project/missing aclocal-1.15
+Provide an AUTOCONF_VERSION environment variable, please
+aclocal-1.15: error: echo failed with exit status: 127
+WARNING: 'aclocal-1.15' is missing on your system.
+         You should only need it if you modified 'acinclude.m4' or
+         'configure.ac' or m4 files included by 'configure.ac'.
+         The 'aclocal' program is part of the GNU Automake package:
+         &lt;http://www.gnu.org/software/automake&gt;
+         It also requires GNU Autoconf, GNU m4 and Perl in order to run:
+         &lt;http://www.gnu.org/software/autoconf&gt;
+         &lt;http://www.gnu.org/software/m4/&gt;
+         &lt;http://www.perl.org/&gt;
+*** Error 127 in /root/project/ (Makefile:330 './aclocal.m4')
+</code></pre>
+<p>Set <code>AUTOCONF_VERSION</code> environment variable:</p>
+<pre><code># export AUTOCONF_VERSION=2.69
+</code></pre>
+<p>Run &#8220;<code>autoreconf -f -i</code>&#8220;:</p>
+<pre><code># autoreconf -f -i
+Provide an AUTOMAKE_VERSION environment variable, please
+autoreconf-2.69: aclocal failed with exit status: 127
+</code></pre>
+<p>Set <code>AUTOMAKE_VERSION</code>:</p>
+<pre><code># export AUTOMAKE_VERSION=1.15
+</code></pre>
+<p>This time, it worked:</p>
+<pre><code># autoreconf -f -i
+# make
+/bin/sh ./config.status --recheck
+......</code></pre>
+</div>
+	</div><!-- .entry-content -->

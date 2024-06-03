@@ -3,7 +3,7 @@ dnl v0.2 04/22/24 Updates for OpenBSD
 dnl
 dnl Process this file with autoconf
 
-AC_PREREQ([2.69])
+AC_PREREQ([2.71])
 AC_INIT(autotools-bootstrap, 0.2, franklin@dead10c5.org, https://github.com/devsecfranklin/autotools-bootstrap)
 AC_CONFIG_MACRO_DIR(config/m4)
 AC_CONFIG_AUX_DIR(config)
