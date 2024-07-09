@@ -14,7 +14,9 @@
 # v0.6 07/13/2023 Add required_files and OpenBSD support
 # v0.7 04/22/2024 More OpenBSD support
 
-set -euo pipefail
+#set -euo pipefail
+set -o errexit  # abort on nonzero exitstatus
+set -o nounset  # abort on unbound variable
 
 # The special shell variable IFS determines how Bash
 # recognizes word boundaries while splitting a sequence of character strings.
@@ -230,7 +232,9 @@ function install_macos() {
   # brew install libtool
   brew install automake
   brew install gawk
+  brew install gsed
   brew install direnv
+  brew install terraform
 }
 
 function install_debian() {

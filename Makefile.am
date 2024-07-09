@@ -1,7 +1,7 @@
 CLOCAL_AMFLAGS = -I config/m4 -I aclocal
 ACLOCAL_AMFLAGS = -I config/m4 -I aclocal
 
-.PHONY: include lib src tests
+.PHONY: include lib src test
 
 clean:
 	rm -rf _build *.egg-info
@@ -30,6 +30,6 @@ test:
 		. _build/bin/activate; \
 		_test/bin/python -m pip install --upgrade pip; \
 		_test/bin/python -m pip install tox; \
-		_test/bin/python -m pip install -r tests/requirements-test.txt; \
-		_test/bin/python -m pip install -r tests/requirements-security.txt; \
+		_test/bin/python -m pip install -r test/requirements-test.txt; \
+		_test/bin/python -m pip install -r test/requirements-security.txt; \
 	)
