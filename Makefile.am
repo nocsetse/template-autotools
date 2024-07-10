@@ -9,7 +9,7 @@ clean:
 	@find . -name '__pycache__' | xargs rm -rf
 	@find . -name 'Makefile' | xargs rm -rf
 	@find . -name 'Makefile.in' | xargs rm -rf
-	@for trash in _build aclocal.m4 autom4te.cache config config.log config.status configure configure~ libtool; do\
+	@for trash in _build _test aclocal.m4 autom4te.cache config config.log config.status configure configure~ libtool; do\
 		if [ -f $$trash ] || [ -d $$trash ]; then \
 				echo "Removing $$trash" ;\
 				rm -rf $$trash ;\
@@ -27,7 +27,7 @@ python:
 test: 
 	@$(PY39) -m venv _test
 	( \
-		. _build/bin/activate; \
+		. _test/bin/activate; \
 		_test/bin/python -m pip install --upgrade pip; \
 		_test/bin/python -m pip install tox; \
 		_test/bin/python -m pip install -r test/requirements-test.txt; \
