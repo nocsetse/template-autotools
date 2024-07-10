@@ -13,6 +13,7 @@
 # v0.5 11/16/2022 Handle Docker container builds
 # v0.6 07/13/2023 Add required_files and OpenBSD support
 # v0.7 04/22/2024 More OpenBSD support
+# v0.8 07/10/2024 Updates for RHEL8 and MacOS
 
 #set -euo pipefail
 set -o errexit  # abort on nonzero exitstatus
@@ -225,16 +226,14 @@ function check_installed() {
 
 function install_macos() {
   echo -e "${CYAN}Updating brew for MacOS (this may take a while...)${NC}"
+  declare -a Packages=( "git" "make" "automake" "gsed" "gawk" "direnv" "terraform" "libtool" )
   brew cleanup
   brew upgrade
   
-  echo -e "${CYAN}Setting up autools for MacOS (this may take a while...)${NC}"
-  # brew install libtool
-  brew install automake
-  brew install gawk
-  brew install gsed
-  brew install direnv
-  brew install terraform
+  for i in ${Packages[@]};
+  do
+    brew install ${i}
+  done
 }
 
 function install_debian() {
@@ -266,10 +265,16 @@ function install_debian() {
 }
 
 function install_redhat() {
-  # Container package installs will fail unless you do an initial update, the upgrade is optional
-  if [ "${CONTAINER}" = true ]; then
-    sudo yum update
-  fi
+  echo -e "${CYAN}RedHat 8 setup${NC}"
+  dnf upgrade -y
+  yum -y --disableplugin=subscription-manager update
+  dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+
+  declare -a Packages=( "make" "automake" "autoconf" "libtool" )
+  for i in ${Packages[@]};
+  do
+    dnf install -y ${i} --skip-broken
+  done
 }
 
 function required_files()
