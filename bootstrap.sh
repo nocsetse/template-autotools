@@ -16,8 +16,8 @@
 # v0.8 07/10/2024 Updates for RHEL8 and MacOS
 
 #set -euo pipefail
-set -o errexit  # abort on nonzero exitstatus
-set -o nounset  # abort on unbound variable
+set -o errexit # abort on nonzero exitstatus
+set -o nounset # abort on unbound variable
 
 # The special shell variable IFS determines how Bash
 # recognizes word boundaries while splitting a sequence of character strings.
@@ -57,42 +57,44 @@ function check_docker() {
 }
 
 function detect_os() {
-  # check for the /etc/os-release file
-  if [ -f "/etc/os-release" ]; then
-    OS_RELEASE=`cat /etc/os-release | grep "^ID=" | cut -d"=" -f2`
+  MACHINE=$(uname -m)
+  KERNEL=$(uname -s)
+  KERNEL_VERSION=$(uname -v)
+
+  if [ "$MACHINE" = "aarch64" ]; then
+    echo -e "${CYAN}Found ARM hardware.${NC}"
+  elif [ "$MACHINE" = "sparc64" ]; then
+    echo -e "${CYAN}Found Sun SPARC hardware.${NC}"
+    MY_OS="sparc"
+  elif [ "$MACHINE" = "x86_64" ]; then
+    echo -e "${CYAN}Found INTEL compatible hardware.${NC}"
+  else
+    echo -e "${CYAN}Other Hardware: ${MACHINE}${NC}"
   fi
 
-  if [ -n "${OS_RELEASE}" ]; then
-    echo -e "${CYAN}Found /etc/os-release file: ${OS_RELEASE}${NC}"
+  if [ ! "${KERNEL}" = "unknown" ]; then
+    echo -e "${CYAN}Kernel: ${KERNEL}${NC}"
   fi
 
-  # Check uname (Linux, OpenBSD, Darwin)
-  MY_UNAME=`uname`
-  if [ -n "${OS_RELEASE}" ]; then
-    echo -e "${CYAN}Found uname: ${MY_UNAME}${NC}"
+  if [ ! "${KERNEL_VERSION}" = "unknown" ]; then
+    echo -e "${CYAN}Kernel Version: ${KERNEL_VERSION}${NC}"
   fi
 
-
-  if [ "${MY_UNAME}" == "OpenBSD" ]
-  then
-    echo -e "${CYAN}Detected OpenBSD${NC}"
-    MY_OS="openbsd"
-  elif [ "${MY_UNAME}" == "Darwin" ]
-  then
+  if [ "$(uname)" == "Darwin" ]; then
     echo -e "${CYAN}Detected MacOS${NC}"
     MY_OS="mac"
-  elif [ -f "/etc/redhat-release" ]
-  then
+  elif [ -f "/etc/redhat-release" ]; then
     echo -e "${CYAN}Detected Red Hat/CentoOS/RHEL${NC}"
     MY_OS="rh"
-  elif [ "$(grep -Ei 'debian|buntu|mint' /etc/*release)" ]
-  then
+  elif [ "$(grep -Ei 'debian|buntu|mint' /etc/*release)" ]; then
     echo -e "${CYAN}Detected Debian/Ubuntu/Mint${NC}"
     MY_OS="deb"
-  elif grep -q Microsoft /proc/version
-  then
+  elif grep -q Microsoft /proc/version; then
     echo -e "${CYAN}Detected Windows pretending to be Linux${NC}"
     MY_OS="win"
+  elif [ "$(uname -s)" == "OpenBSD" ]; then
+    echo -e "${CYAN}Detected OpenBSD${NC}"
+    MY_OS="obsd"
   else
     echo -e "${YELLOW}Unrecongnized architecture.${NC}"
     exit 1
@@ -101,18 +103,18 @@ function detect_os() {
 
 function run_autopoint() {
   echo -e "${CYAN}Checking autopoint version...${NC}"
-  ver=`autopoint --version | awk '{print $NF; exit}'`
-  ap_maj=`echo $ver | sed 's;\..*;;g'`
-  ap_min=`echo $ver | sed -e 's;^[0-9]*\.;;g'  -e 's;\..*$;;g'`
-  ap_teeny=`echo $ver | sed -e 's;^[0-9]*\.[0-9]*\.;;g'`
+  ver=$(autopoint --version | awk '{print $NF; exit}')
+  ap_maj=$(echo $ver | sed 's;\..*;;g')
+  ap_min=$(echo $ver | sed -e 's;^[0-9]*\.;;g' -e 's;\..*$;;g')
+  ap_teeny=$(echo $ver | sed -e 's;^[0-9]*\.[0-9]*\.;;g')
   echo "    $ver"
-  
+
   case $ap_maj in
-    0)
-      if test $ap_min -lt 14 ; then
-        echo "You must have gettext >= 0.14.0 but you seem to have $ver"
-        exit 1
-      fi
+  0)
+    if test $ap_min -lt 14; then
+      echo "You must have gettext >= 0.14.0 but you seem to have $ver"
+      exit 1
+    fi
     ;;
   esac
   echo "Running autopoint..."
@@ -121,39 +123,39 @@ function run_autopoint() {
 
 function run_libtoolize() {
   echo "Checking libtoolize version..."
-  libtoolize --version 2>&1 > /dev/null
+  libtoolize --version 2>&1 >/dev/null
   rc=$?
-  if test $rc -ne 0 ; then
+  if test $rc -ne 0; then
     echo "Could not determine the version of libtool on your machine"
     echo "libtool --version produced:"
     libtool --version
     exit 1
   fi
-  lt_ver=`libtoolize --version | awk '{print $NF; exit}'`
-  lt_maj=`echo $lt_ver | sed 's;\..*;;g'`
-  lt_min=`echo $lt_ver | sed -e 's;^[0-9]*\.;;g'  -e 's;\..*$;;g'`
-  lt_teeny=`echo $lt_ver | sed -e 's;^[0-9]*\.[0-9]*\.;;g'`
+  lt_ver=$(libtoolize --version | awk '{print $NF; exit}')
+  lt_maj=$(echo $lt_ver | sed 's;\..*;;g')
+  lt_min=$(echo $lt_ver | sed -e 's;^[0-9]*\.;;g' -e 's;\..*$;;g')
+  lt_teeny=$(echo $lt_ver | sed -e 's;^[0-9]*\.[0-9]*\.;;g')
   echo "    $lt_ver"
-  
+
   case $lt_maj in
-    0)
+  0)
+    echo "You must have libtool >= 1.4.0 but you seem to have $lt_ver"
+    exit 1
+    ;;
+
+  1)
+    if test $lt_min -lt 4; then
       echo "You must have libtool >= 1.4.0 but you seem to have $lt_ver"
       exit 1
+    fi
     ;;
-    
-    1)
-      if test $lt_min -lt 4 ; then
-        echo "You must have libtool >= 1.4.0 but you seem to have $lt_ver"
-        exit 1
-      fi
-    ;;
-    
-    2)
-    ;;
-    
+
+  2) ;;
+
+  \
     *)
-      echo "You are running a newer libtool than gerbv has been tested with."
-      echo "It will probably work, but this is a warning that it may not."
+    echo "You are running a newer libtool than gerbv has been tested with."
+    echo "It will probably work, but this is a warning that it may not."
     ;;
   esac
   echo "Running libtoolize..."
@@ -163,9 +165,9 @@ function run_libtoolize() {
 function run_aclocal() {
   if [ "${MY_OS}" != "openbsd" ]; then
     echo -e "${LBLUE}Checking aclocal version...${NC}"
-    acl_ver=`aclocal --version | awk '{print $NF; exit}'`
+    acl_ver=$(aclocal --version | awk '{print $NF; exit}')
     echo "    $acl_ver"
-    
+
     echo -e "${CYAN}Running aclocal...${NC}"
     #aclocal -I m4 $ACLOCAL_FLAGS || exit 1
     aclocal -I config || exit 1
@@ -177,9 +179,9 @@ function run_aclocal() {
 
 function run_autoheader() {
   echo "Checking autoheader version..."
-  ah_ver=`autoheader --version | awk '{print $NF; exit}'`
+  ah_ver=$(autoheader --version | awk '{print $NF; exit}')
   echo "    $ah_ver"
-  
+
   echo "Running autoheader..."
   autoheader || exit 1
   echo "... done with autoheader."
@@ -188,9 +190,9 @@ function run_autoheader() {
 function run_automake() {
   if [ "${MY_OS}" != "openbsd" ]; then
     echo "Checking automake version..."
-    am_ver=`automake --version | awk '{print $NF; exit}'`
+    am_ver=$(automake --version | awk '{print $NF; exit}')
     echo "    $am_ver"
-    
+
     echo "Running automake..."
     automake -a -c --add-missing || exit 1
     #automake --force --copy --add-missing || exit 1
@@ -203,7 +205,7 @@ function run_automake() {
 function run_autoconf() {
   if [ "${MY_OS}" != "openbsd" ]; then
     echo -e "${LGREEN}Checking autoconf version...${NC}"
-    ac_ver=`autoconf --version | awk '{print $NF; exit}'`
+    ac_ver=$(autoconf --version | awk '{print $NF; exit}')
     echo -e "${LGREEN}Autoconf version: $ac_ver${NC}"
     echo "Running autoconf..."
     autoreconf -i || exit 1
@@ -217,8 +219,7 @@ function run_autoconf() {
 }
 
 function check_installed() {
-  if ! command -v ${1} &> /dev/null
-  then
+  if ! command -v ${1} &>/dev/null; then
     echo "${1} could not be found"
     exit
   fi
@@ -226,12 +227,11 @@ function check_installed() {
 
 function install_macos() {
   echo -e "${CYAN}Updating brew for MacOS (this may take a while...)${NC}"
-  declare -a Packages=( "git" "make" "automake" "gsed" "gawk" "direnv" "terraform" "libtool" )
+  declare -a Packages=("git" "make" "automake" "gsed" "gawk" "direnv" "terraform" "libtool")
   brew cleanup
   brew upgrade
-  
-  for i in ${Packages[@]};
-  do
+
+  for i in ${Packages[@]}; do
     brew install ${i}
   done
 }
@@ -240,20 +240,19 @@ function install_debian() {
   # sudo apt install gnuplot gawk libtool psutils make autopoint
   #declare -a  Packages=( "doxygen" "gawk" "doxygen-latex" "automake" )
   # sudo apt install gnuplot gawk libtool psutils make autoconf automake texlive-latex-extra fig2dev
-  declare -a Packages=( "git" "make" "automake" "libtool" )
-  
+  declare -a Packages=("git" "make" "automake" "libtool")
+
   # Container package installs will fail unless you do an initial update, the upgrade is optional
   if [ "${CONTAINER}" = true ]; then
     apt-get update && apt-get upgrade -y
   fi
-  
-  for i in ${Packages[@]};
-  do
-    PKG_OK=$(dpkg-query -W --showformat='${Status}\n' ${i}|grep "install ok installed") &> /dev/null
+
+  for i in ${Packages[@]}; do
+    PKG_OK=$(dpkg-query -W --showformat='${Status}\n' ${i} | grep "install ok installed") &>/dev/null
     # echo -e "${LBLUE}Checking for ${i}: ${PKG_OK}${NC}"
     if [ "" = "${PKG_OK}" ]; then
       echo -e "${LBLUE}Installing ${i} since it is not found.${NC}"
-      
+
       # If we are in a container there is no sudo in Debian
       if [ "${CONTAINER}" = true ]; then
         apt-get --yes install ${i}
@@ -270,19 +269,16 @@ function install_redhat() {
   yum -y --disableplugin=subscription-manager update
   dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
 
-  declare -a Packages=( "make" "automake" "autoconf" "libtool" )
-  for i in ${Packages[@]};
-  do
+  declare -a Packages=("make" "automake" "autoconf" "libtool")
+  for i in ${Packages[@]}; do
     dnf install -y ${i} --skip-broken
   done
 }
 
-function required_files()
-{
+function required_files() {
   declare -a required_files=("AUTHORS" "ChangeLog" "NEWS")
-  
-  for xx in ${required_files[@]};
-  do
+
+  for xx in ${required_files[@]}; do
     if [ ! -f "${xx}" ]; then
       echo -e "${LGREEN}Creating required file ${xx} since it is not found.${NC}"
       #touch "${xx}"
@@ -291,32 +287,31 @@ function required_files()
       echo -e "${LBLUE}Found required file ${xx}.${NC}"
     fi
   done
-  
+
   if [ ! -d "config/m4" ]; then mkdir -p config/m4; fi
 }
-
 
 function main() {
   check_docker
   detect_os
   #check_installed doxygen
   required_files
-  
+
   if [ ! -d "config/m4" ]; then mkdir -p config/m4; fi
-  
+
   if [ "${MY_OS}" == "mac" ]; then
     check_installed brew
     install_macos
   fi
-  
+
   if [ "${MY_OS}" == "rh" ]; then
     install_redhat
   fi
-  
+
   if [ "${MY_OS}" == "deb" ]; then
     install_debian
   fi
-  
+
   if [ ! -d "aclocal" ]; then mkdir aclocal; fi
   run_aclocal
   run_autoconf
@@ -326,4 +321,3 @@ function main() {
 }
 
 main "$@"
-
