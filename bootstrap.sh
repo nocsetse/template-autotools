@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 #
-# SPDX-FileCopyrightText: 2023 DE:AD:10:C5 <franklin@dead10c5.org>
+# SPDX-FileCopyrightText: ©2021-2025 franklin <franklin@bitsmasher.net>
 #
-# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-License-Identifier: MIT
 
 # ChangeLog:
 #
@@ -10,14 +10,15 @@
 # v0.2 09/24/2022 Update this script
 # v0.3 10/19/2022 Add tool functions
 # v0.4 11/10/2022 Add automake check
-# v0.5 11/16/2022 Handle Docker container builds
+# v0.5 11/16/2022 Handle container builds
 # v0.6 07/13/2023 Add required_files and OpenBSD support
 # v0.7 04/22/2024 More OpenBSD support
-# v0.8 07/10/2024 Updates for RHEL8 and MacOS
+# v0.8 09/06/2024 Support GCP Linux
+# v0.9 02/18/2025 Updates for Mac
+# v1.0 02/26/2025 Optimize some functions using Gemini 2.0 Flash
+# v1.1 05/29/2025 Update the OS Detection function, add HW Detection function
 
 #set -euo pipefail
-set -o errexit # abort on nonzero exitstatus
-set -o nounset # abort on unbound variable
 
 # The special shell variable IFS determines how Bash
 # recognizes word boundaries while splitting a sequence of character strings.
@@ -41,18 +42,18 @@ LPURP='\033[1;35m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
-MY_OS="unknown"
-OS_RELEASE=""
+# --- Some config Variables ----------------------------------------
 CONTAINER=false
-DOCUMENTATION=false
+MY_OS="unknown"
 
-# Check if we are inside a docker container
-function check_docker() {
+# Check if we are inside a container
+function check_container() {
+  echo -e "\n${LPURP}# --- Check Container Status ------------------------------------------\n${NC}" | tee -a "${RAW_OUTPUT}"
   if [ -f /.dockerenv ]; then
-    echo -e "${CYAN}Containerized build environment...${NC}"
+    echo -e "${YELLOW}Containerized build environment...${NC}"
     CONTAINER=true
   else
-    echo -e "${CYAN}NOT a containerized build environment...${NC}"
+    echo -e "${LBLUE}NOT a containerized build environment...${NC}"
   fi
 }
 
