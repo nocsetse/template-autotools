@@ -1,5 +1,9 @@
+dnl v0.1 Original Version from a few years ago or so
+dnl v0.2 04/22/24 Updates for OpenBSD
+dnl
 dnl Process this file with autoconf
-AC_PREREQ([2.69])
+
+AC_PREREQ([2.71])
 AC_INIT(autotools-bootstrap, 0.2, franklin@dead10c5.org, https://github.com/devsecfranklin/autotools-bootstrap)
 AC_CONFIG_MACRO_DIR(config/m4)
 AC_CONFIG_AUX_DIR(config)
@@ -49,6 +53,7 @@ AC_CANONICAL_HOST
 build_linux=no
 build_windows=no
 build_mac=no
+build_openbsd=no
 
 # Detect the target system
 case "${host_os}" in
@@ -60,6 +65,9 @@ case "${host_os}" in
         ;;
     darwin*)
         build_mac=yes
+        ;;
+    openbsd*)
+        build_openbsd=yes
         ;;
     *)
         AC_MSG_ERROR(["OS $host_os is not supported"])

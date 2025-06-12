@@ -7,3 +7,4 @@ virtualenv==20.26.6
 #pycodestyle
 #autopep8
 wheel==0.38.1
+pre-commit

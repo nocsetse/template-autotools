@@ -288,6 +288,8 @@ config.h.in
 config/
 config/install-sh
 config/missing
+conftest.c
+conftest.err
 #aclocal
 aclocal.m4
 autom4te.cache/
